@@ -1,4 +1,3 @@
-// All valid credit card numbers
 const valid1 = [4, 5, 3, 9, 6, 7, 7, 9, 0, 8, 0, 1, 6, 8, 0, 8];
 const valid2 = [5, 5, 3, 5, 7, 6, 6, 7, 6, 8, 7, 5, 1, 4, 3, 9];
 const valid3 = [3, 7, 1, 6, 1, 2, 0, 1, 9, 9, 8, 5, 2, 3, 6];
@@ -18,18 +17,22 @@ const mystery2 = [5, 4, 6, 6, 1, 0, 0, 8, 6, 1, 6, 2, 0, 2, 3, 9];
 const mystery3 = [6, 0, 1, 1, 3, 7, 7, 0, 2, 0, 9, 6, 2, 6, 5, 6, 2, 0, 3];
 const mystery4 = [4, 9, 2, 9, 8, 7, 7, 1, 6, 9, 2, 1, 7, 0, 9, 3];
 const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3];
+const mystery6 = [9, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3]
 
 // An array of all the arrays above
-const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5];
+const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5, mystery6];
 
 
-// Add your functions below:
+// Calling functions:
+const invalidCards = findInvalidCards(batch);
+idInvalidCardCompanies(invalidCards);
+
+// Actual functions:
 function validateCred(cardNo) {
   let cardNoCopy = [...cardNo];
   let sum = 0;
-  let checkDigit = cardNoCopy.pop();
+  checkDigit = cardNoCopy.pop();
   cardNoCopy.reverse();
-  
   for(let i=0; i<cardNoCopy.length; i+=2) {
     cardNoCopy[i] = cardNoCopy[i]*2;
     if(cardNoCopy[i]>9) {
@@ -49,6 +52,7 @@ function validateCred(cardNo) {
 
 function findInvalidCards(batch) {
   let invalidCards = [];
+  let invalidNo = 0;
   for(let i=0; i<batch.length; i++) {
     if(validateCred(batch[i]) === false) {
       invalidCards.push(batch[i]);
@@ -57,10 +61,9 @@ function findInvalidCards(batch) {
   return invalidCards;
 }
 
-const invalidCards = findInvalidCards(batch);
-
 function idInvalidCardCompanies(batch) {
   let companies = [];
+  let errors = [];
   let company
   for(let i=0; i<batch.length; i++) {
     switch(batch[i][0]) {
@@ -77,11 +80,20 @@ function idInvalidCardCompanies(batch) {
         company = 'Discover';
         break;
       default:
-        console.log(`Company for card number ${i+1} of ${batch.length} not recognized.`);
+        errors.push(`Card number ${i+1} of ${batch.length}`);
     }
     if(companies.indexOf(company) === -1) {
       companies.push(company);
     }
+  }
+  // Log results to console
+  console.log(`${invalidCards.length} invalid cards have been found. The cards were supposedly issued by the following companies: \n`)
+  for(let i=0; i<companies.length; i++) {
+    console.log('- '+companies[i]);
+  }
+  console.log('\nThe following cards in this batch were not recognized to be from any company: \n');
+  for(let i=0; i<errors.length; i++) {
+    console.log('- '+errors[i]);
   }
   return companies;
 }
